@@ -1,0 +1,71 @@
+@font-face {
+  font-family: SF Pro;
+  src: url(SF-Pro-Display-Light.otf);
+}
+
+body {
+  background-color: pink;
+  font-family: SF Pro;
+}
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pics {
+  width: 250px;
+  height: auto;
+  border-radius: 20px;
+}
+
+button {
+  background: linear-gradient(135deg, #ff6fae, #ff9ccf);
+  color: white;
+  font-family: SF Pro;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 12px 26px;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  margin-bottom: 12px;
+
+  box-shadow:
+    0 6px 16px rgba(255, 105, 180, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
+}
+
+.button:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 10px 22px rgba(255, 105, 180, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.button:active {
+  transform: translateY(1px);
+  box-shadow:
+    0 4px 10px rgba(255, 105, 180, 0.3),
+    inset 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.confetti {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 999;
+}
+
+.button-row {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}

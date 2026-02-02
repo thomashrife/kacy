@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="stylesheet.css" />
+    <title>Heart</title>
+  </head>
+  <body>
+    <div class="content">
+      <canvas id="heart" width="700" height="400" class="heart"></canvas>
+      <canvas id="confetti" class="confetti" width="700" height="400"></canvas>
+      <p class="hello">Hello Kacy I hope you is doing good</p>
+      <button class="button" onclick="drawHeart()">
+        Click for a surprise :)
+      </button>
+      <p>Will you be my valentine Kacy <3</p>
+      <div class="button-row">
+        <button class="yes" onClick="startConfetti()">Yes</button>
+        <button class="yes" onClick="startConfetti()">Yes</button>
+      </div>
+      <script>
+        let drawn = false;
+
+        // Confetti state
+        let confettiRaf = null;
+        let confettiParticles = [];
+
+        function drawHeartShape(ctx, x, y, width, height, color) {
+          ctx.save();
+          ctx.beginPath();
+
+          const topCurveHeight = height * 0.25;
+
+          // Start near top center
+          ctx.moveTo(x, y + topCurveHeight);
+
+          // Top-left lobe
+          ctx.bezierCurveTo(
+            x,
+            y,
+            x - width / 2,
+            y,
+            x - width / 2,
+            y + topCurveHeight,
+          );
+
+          // Left side down to bottom tip
+          ctx.bezierCurveTo(
+            x - width / 2,
+            y + height * 0.6,
+            x - width * 0.1,
+            y + height * 0.9,
+            x,
+            y + height,
+          );
+
+          // Right side up from bottom tip
+          ctx.bezierCurveTo(
+            x + width * 0.1,
+            y + height * 0.9,
+            x + width / 2,
+            y + height * 0.6,
+            x + width / 2,
+            y + topCurveHeight,
+          );
+
+          // Top-right lobe back to start
+          ctx.bezierCurveTo(x + width / 2, y, x, y, x, y + topCurveHeight);
+
+          ctx.closePath();
+          ctx.fillStyle = color;
+          ctx.fill();
+          ctx.restore();
+        }
+
+        function drawHeart() {
+          drawn = true;
+
+          const c = document.getElementById("heart");
+          if (!c) return;
+          const ctx = c.getContext("2d");
+
+          const fromx = 350;
+          const fromy = 60;
+          const lw = 280;
+          const hlen = 260;
+          const color = "#e11d48";
+
+          const x = fromx;
+          const y = fromy;
+          const width = lw;
+          const height = hlen;
+
+          ctx.clearRect(0, 0, c.width, c.height);
+          drawHeartShape(ctx, x, y, width, height, color);
+
+          // Trigger confetti after drawing
+        }
+
+        function startConfetti() {
+          const canvas = document.getElementById("confetti");
+          if (!canvas) return;
+          const ctx = canvas.getContext("2d");
+
+          // Match the confetti canvas to the visible area
+          const resize = () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+          };
+          resize();
+
+          // Reset any previous run
+          if (confettiRaf) cancelAnimationFrame(confettiRaf);
+          confettiParticles = [];
+
+          const colors = [
+            "#ff6fae",
+            "#ff9ccf",
+            "#ffffff",
+            "#e11d48",
+            "#ffd1e8",
+          ];
+          const count = 230;
+          const gravity = 0.12;
+          const drag = 0.995;
+
+          for (let i = 0; i < count; i++) {
+            const angle = Math.random() * Math.PI - Math.PI / 2; // mostly upward
+            const speed = 6 + Math.random() * 8;
+            confettiParticles.push({
+              x: window.innerWidth / 2,
+              y: window.innerHeight / 3,
+              vx: Math.cos(angle) * speed + (Math.random() - 0.5) * 2,
+              vy: Math.sin(angle) * speed - (6 + Math.random() * 4),
+              size: 6 + Math.random() * 6,
+              rot: Math.random() * Math.PI,
+              vr: (Math.random() - 0.5) * 0.2,
+              color: colors[Math.floor(Math.random() * colors.length)],
+              life: 120 + Math.random() * 60,
+            });
+          }
+
+          const onResize = () => resize();
+          window.addEventListener("resize", onResize, { once: true });
+
+          const tick = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (const p of confettiParticles) {
+              p.vx *= drag;
+              p.vy = p.vy * drag + gravity;
+              p.x += p.vx;
+              p.y += p.vy;
+              p.rot += p.vr;
+              p.life -= 1;
+
+              ctx.save();
+              ctx.translate(p.x, p.y);
+              ctx.rotate(p.rot);
+              ctx.fillStyle = p.color;
+              ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+              ctx.restore();
+            }
+
+            // Remove dead particles
+            confettiParticles = confettiParticles.filter(
+              (p) => p.life > 0 && p.y < canvas.height + 40,
+            );
+
+            if (confettiParticles.length > 0) {
+              confettiRaf = requestAnimationFrame(tick);
+            } else {
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+              confettiRaf = null;
+            }
+          };
+
+          tick();
+        }
+      </script>
+    </div>
+    <div class="imgs">
+      <img src="assets/homecoming.png" class="pics" />
+      <img src="assets/cava.png" class="pics" />
+      <img src="assets/valentines1.png" class="pics" />
+      <img src="assets/vg.png" class="pics" />
+      <img src="assets/prom1.png" class="pics" />
+      <img src="assets/homecoming2.png" class="pics" />
+      <img
+        src="assets/lanternfestival1.png"
+        width="500"
+        height="600"
+        class="pics"
+      />
+      <img src="assets/disney1.png" class="pics" />
+      <img src="assets/missioninn.png" class="pics" />
+      <img src="assets/together.png" class="pics" />
+
+      <img src="assets/snow.png" class="pics" />
+      <img src="assets/jellycats.png" class="pics" />
+    </div>
+  </body>
+</html>
